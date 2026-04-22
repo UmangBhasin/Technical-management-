@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reports</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar compact">
+    <h1>Reports Module (Admin)</h1>
+    <a class="btn ghost" href="admin-dashboard.html">Dashboard</a>
+  </header>
+
+  <main class="page-grid single-col">
+    <section class="card">
+      <h2>Monthly Revenue</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Month</th><th>Revenue</th></tr></thead>
+          <tbody id="monthlyRevenueTable"></tbody>
+        </table>
+      </div>
+      <p id="reportsMessage" class="form-message"></p>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/reports.js"></script>
+</body>
+</html>

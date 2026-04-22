@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transactions Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar compact">
+    <h1>Transactions Module</h1>
+    <a class="btn ghost" id="dashboardLink" href="#">Dashboard</a>
+  </header>
+
+  <main class="page-grid">
+    <section class="card">
+      <h2>Add / Update Transaction</h2>
+      <form id="transactionForm" class="form-grid">
+        <input type="hidden" id="transactionId" />
+
+        <label>Membership</label>
+        <select id="member_id" required></select>
+
+        <label>Amount</label>
+        <input id="amount" type="number" step="0.01" min="0.01" required />
+
+        <label>Transaction Type</label>
+        <input id="transaction_type" type="text" minlength="3" maxlength="40" required />
+
+        <label>Notes</label>
+        <textarea id="notes" maxlength="500"></textarea>
+
+        <button class="btn primary" type="submit">Save Transaction</button>
+        <p id="transactionMessage" class="form-message"></p>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Transactions List</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Member</th><th>Amount</th><th>Type</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody id="transactionTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/transactions.js"></script>
+</body>
+</html>

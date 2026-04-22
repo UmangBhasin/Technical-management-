@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar compact">
+    <h1>Maintenance Module (Admin)</h1>
+    <a class="btn ghost" id="dashboardLink" href="admin-dashboard.html">Dashboard</a>
+  </header>
+
+  <main class="page-grid">
+    <section class="card">
+      <h2>Create / Update Maintenance</h2>
+      <form id="maintenanceForm" class="form-grid">
+        <input type="hidden" id="maintenanceId" />
+        <label>Title</label>
+        <input id="title" type="text" minlength="3" maxlength="120" required />
+
+        <label>Description</label>
+        <textarea id="description" minlength="5" required></textarea>
+
+        <label>Maintenance Date</label>
+        <input id="maintenance_date" type="date" required />
+
+        <label>Status</label>
+        <select id="status">
+          <option value="planned">planned</option>
+          <option value="in-progress">in-progress</option>
+          <option value="done">done</option>
+        </select>
+
+        <label>Cost</label>
+        <input id="cost" type="number" min="0" step="0.01" required />
+
+        <button class="btn primary" type="submit">Save Maintenance</button>
+        <p id="maintenanceMessage" class="form-message"></p>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Maintenance Records</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Title</th><th>Date</th><th>Status</th><th>Cost</th><th>Action</th></tr></thead>
+          <tbody id="maintenanceTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/maintenance.js"></script>
+</body>
+</html>
