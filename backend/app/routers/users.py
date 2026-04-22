@@ -4,13 +4,14 @@ from sqlalchemy.orm import Session
 from app.core.dependencies import get_current_user, get_db, require_admin
 from app.models.user import User
 from app.schemas.user import UserResponse
+from app.services.user_service import UserService
 
 router = APIRouter()
 
 
 @router.get("/", response_model=list[UserResponse])
 def list_users(_: User = Depends(require_admin), db: Session = Depends(get_db)):
-    return db.query(User).order_by(User.created_at.desc()).all()
+    return UserService.list_users(db)
 
 
 @router.get("/profile", response_model=UserResponse)

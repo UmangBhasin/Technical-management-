@@ -1,6 +1,14 @@
 const loginForm = document.getElementById("loginForm");
 const registerForm = document.getElementById("registerForm");
 
+(function enforceAuthPageFlow() {
+  const token = sessionStorage.getItem("access_token");
+  const role = sessionStorage.getItem("role");
+  if (token && role) {
+    window.location.href = role === "admin" ? "admin-dashboard.html" : "user-dashboard.html";
+  }
+})();
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();

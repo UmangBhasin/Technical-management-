@@ -1,22 +1,31 @@
-window.APP_COMMON.requireAuth(["admin", "user"]);
+window.APP_COMMON.enforcePageFlow({ allowedRoles: ["admin"], pageType: "module" });
 window.APP_COMMON.setupDashboardLink();
+window.APP_COMMON.renderAppNav();
 
-const membershipForm = document.getElementById("membershipForm");
+const addMembershipForm = document.getElementById("addMembershipForm");
+const updateMembershipForm = document.getElementById("updateMembershipForm");
 const membershipTable = document.getElementById("membershipTable");
+const membershipPreview = document.getElementById("membershipPreview");
+const membershipLookupId = document.getElementById("membershipLookupId");
+const loadMembershipBtn = document.getElementById("loadMembershipBtn");
 
-function validateMembershipDates(startDate, endDate) {
-  return new Date(endDate) >= new Date(startDate);
+let selectedMembership = null;
+
+function selectedRadioValue(name) {
+  const selected = document.querySelector(`input[name='${name}']:checked`);
+  return selected ? selected.value : "";
 }
 
-function fillMembershipForm(row) {
-  document.getElementById("membershipId").value = row.id;
-  document.getElementById("member_name").value = row.member_name;
-  document.getElementById("email").value = row.email;
-  document.getElementById("phone").value = row.phone;
-  document.getElementById("membership_type").value = row.membership_type;
-  document.getElementById("start_date").value = row.start_date;
-  document.getElementById("end_date").value = row.end_date;
-  document.getElementById("status").value = row.status;
+function renderMembershipPreview(row) {
+  membershipPreview.innerHTML = `
+    <strong>${row.member_name}</strong><br />
+    ID: ${row.id}<br />
+    Email: ${row.email}<br />
+    Duration: ${row.membership_type}<br />
+    Start: ${row.start_date}<br />
+    End: ${row.end_date}<br />
+    Status: ${row.status}
+  `;
 }
 
 async function loadMemberships() {
@@ -25,61 +34,113 @@ async function loadMemberships() {
     membershipTable.innerHTML = data
       .map(
         (item) => `<tr>
+          <td>${item.id}</td>
           <td>${item.member_name}</td>
           <td>${item.email}</td>
           <td>${item.membership_type}</td>
+          <td>${item.end_date}</td>
           <td>${item.status}</td>
-          <td><button class="btn ghost" data-id="${item.id}">Edit</button></td>
+          <td><button class="btn ghost" data-id="${item.id}">Use ID</button></td>
         </tr>`,
       )
       .join("");
 
     Array.from(membershipTable.querySelectorAll("button[data-id]")).forEach((button) => {
       button.addEventListener("click", () => {
-        const selected = data.find((x) => x.id === Number(button.dataset.id));
-        if (selected) {
-          fillMembershipForm(selected);
-        }
+        membershipLookupId.value = button.dataset.id;
       });
     });
   } catch (error) {
-    window.APP_COMMON.showMessage("membershipMessage", error.message);
+    window.APP_COMMON.showMessage("addMembershipMessage", error.message);
   }
 }
 
-membershipForm.addEventListener("submit", async (event) => {
+addMembershipForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  if (!window.APP_COMMON.validateMandatoryFields(["member_name", "email", "phone", "start_date", "status"], "addMembershipMessage")) {
+    return;
+  }
 
   const payload = {
     member_name: document.getElementById("member_name").value.trim(),
     email: document.getElementById("email").value.trim(),
     phone: document.getElementById("phone").value.trim(),
-    membership_type: document.getElementById("membership_type").value.trim(),
+    duration: selectedRadioValue("duration"),
     start_date: document.getElementById("start_date").value,
-    end_date: document.getElementById("end_date").value,
     status: document.getElementById("status").value,
   };
 
-  if (!validateMembershipDates(payload.start_date, payload.end_date)) {
-    window.APP_COMMON.showMessage("membershipMessage", "End date must be on or after start date");
+  if (!payload.member_name || !payload.email || !payload.phone || !payload.start_date || !payload.duration) {
+    window.APP_COMMON.showMessage("addMembershipMessage", "All fields are mandatory");
     return;
   }
 
-  const id = document.getElementById("membershipId").value;
-  const path = id ? `/memberships/${id}` : "/memberships/";
-  const method = id ? "PUT" : "POST";
-
   try {
-    await window.API.request(path, {
-      method,
+    await window.API.request("/memberships/", {
+      method: "POST",
       body: JSON.stringify(payload),
     });
-    membershipForm.reset();
-    document.getElementById("membershipId").value = "";
-    window.APP_COMMON.showMessage("membershipMessage", "Saved successfully", false);
+    addMembershipForm.reset();
+    window.APP_COMMON.showMessage("addMembershipMessage", "Membership added successfully", false);
     loadMemberships();
   } catch (error) {
-    window.APP_COMMON.showMessage("membershipMessage", error.message);
+    window.APP_COMMON.showMessage("addMembershipMessage", error.message);
+  }
+});
+
+loadMembershipBtn.addEventListener("click", async () => {
+  const id = Number(membershipLookupId.value);
+  if (!id) {
+    window.APP_COMMON.showMessage("updateMembershipMessage", "Membership ID is mandatory");
+    return;
+  }
+
+  try {
+    selectedMembership = await window.API.request(`/memberships/${id}`, { method: "GET" });
+    renderMembershipPreview(selectedMembership);
+    window.APP_COMMON.showMessage("updateMembershipMessage", "Membership loaded", false);
+  } catch (error) {
+    selectedMembership = null;
+    membershipPreview.innerHTML = "";
+    window.APP_COMMON.showMessage("updateMembershipMessage", error.message);
+  }
+});
+
+updateMembershipForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const membershipId = Number(membershipLookupId.value);
+  if (!membershipId) {
+    window.APP_COMMON.showMessage("updateMembershipMessage", "Membership ID is mandatory for updates");
+    return;
+  }
+
+  if (!selectedMembership || selectedMembership.id !== membershipId) {
+    window.APP_COMMON.showMessage("updateMembershipMessage", "Load membership data using ID before updating");
+    return;
+  }
+
+  const action = selectedRadioValue("update_action");
+  const extensionDuration = selectedRadioValue("extension_duration") || "6 months";
+
+  const payload = {
+    membership_id: membershipId,
+    action,
+    extension_duration: extensionDuration,
+  };
+
+  try {
+    const updated = await window.API.request(`/memberships/${membershipId}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
+    selectedMembership = updated;
+    renderMembershipPreview(updated);
+    window.APP_COMMON.showMessage("updateMembershipMessage", "Membership updated successfully", false);
+    loadMemberships();
+  } catch (error) {
+    window.APP_COMMON.showMessage("updateMembershipMessage", error.message);
   }
 });
 

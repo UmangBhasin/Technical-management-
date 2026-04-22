@@ -23,6 +23,9 @@ event-management-system/
     app/
       __init__.py
       main.py
+      api/
+        __init__.py
+        router.py
       core/
         config.py
         database.py
@@ -50,6 +53,15 @@ event-management-system/
         maintenance.py
         transactions.py
         reports.py
+      services/
+        __init__.py
+        auth_service.py
+        bootstrap_service.py
+        user_service.py
+        membership_service.py
+        maintenance_service.py
+        transaction_service.py
+        report_service.py
   frontend/
     index.html
     login.html
@@ -73,6 +85,13 @@ event-management-system/
       transactions.js
       reports.js
 ```
+
+    ## Architecture Notes
+
+    - API routing is centralized in app/api/router.py
+    - Route files in app/routers contain only endpoint declarations and dependency wiring
+    - Business logic and data operations are organized in app/services
+    - Data contracts remain in app/schemas and database entities remain in app/models
 
 ## Backend Setup (FastAPI)
 

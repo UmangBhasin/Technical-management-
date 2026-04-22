@@ -15,6 +15,8 @@
     <a class="btn ghost" id="dashboardLink" href="admin-dashboard.html">Dashboard</a>
   </header>
 
+  <nav class="nav-links" id="appNav"></nav>
+
   <main class="page-grid">
     <section class="card">
       <h2>Create / Update Maintenance</h2>
@@ -50,6 +52,47 @@
         <table>
           <thead><tr><th>Title</th><th>Date</th><th>Status</th><th>Cost</th><th>Action</th></tr></thead>
           <tbody id="maintenanceTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>User Maintenance (Admin)</h2>
+      <form id="userMaintenanceForm" class="form-grid">
+        <input type="hidden" id="managedUserId" />
+
+        <label>Full Name</label>
+        <input id="managedUserName" type="text" minlength="2" maxlength="100" required />
+
+        <label>Email</label>
+        <input id="managedUserEmail" type="email" required />
+
+        <label>Password</label>
+        <input id="managedUserPassword" type="password" minlength="8" maxlength="128" placeholder="Required" required />
+
+        <label>Role</label>
+        <select id="managedUserRole">
+          <option value="user">user</option>
+          <option value="admin">admin</option>
+        </select>
+
+        <label>Status</label>
+        <label class="checkbox-row">
+          <input id="managedUserActive" type="checkbox" checked />
+          <span>Active (Checked = Yes, Unchecked = No)</span>
+        </label>
+
+        <button class="btn primary" type="submit">Save User</button>
+        <p id="userMaintenanceMessage" class="form-message"></p>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Users</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="userMaintenanceTable"></tbody>
         </table>
       </div>
     </section>

@@ -8,6 +8,7 @@ function setSession({ access_token, role, full_name }) {
   sessionStorage.setItem("access_token", access_token);
   sessionStorage.setItem("role", role);
   sessionStorage.setItem("full_name", full_name);
+  sessionStorage.setItem("dashboard_visited", "no");
 }
 
 function clearSession() {
@@ -35,7 +36,20 @@ async function request(path, options = {}) {
   const data = contentType.includes("application/json") ? await response.json() : null;
 
   if (!response.ok) {
-    throw new Error(data?.detail || "Request failed");
+    if (response.status === 401 || response.status === 403) {
+      clearSession();
+      if (!window.location.pathname.endsWith("login.html")) {
+        window.location.href = "login.html";
+      }
+    }
+    const detail = data?.detail;
+    if (Array.isArray(detail)) {
+      const message = detail
+        .map((item) => `${(item.loc || []).join(".")}: ${item.msg}`)
+        .join("; ");
+      throw new Error(message || "Validation failed");
+    }
+    throw new Error(detail || "Request failed");
   }
 
   return data;

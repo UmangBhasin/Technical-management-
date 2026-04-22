@@ -15,11 +15,12 @@
     <a class="btn ghost" id="dashboardLink" href="#">Dashboard</a>
   </header>
 
+  <nav class="nav-links" id="appNav"></nav>
+
   <main class="page-grid">
     <section class="card">
-      <h2>Add / Update Membership</h2>
-      <form id="membershipForm" class="form-grid">
-        <input type="hidden" id="membershipId" />
+      <h2>Add Membership</h2>
+      <form id="addMembershipForm" class="form-grid">
         <label>Member Name</label>
         <input id="member_name" type="text" minlength="2" maxlength="120" required />
 
@@ -29,14 +30,15 @@
         <label>Phone</label>
         <input id="phone" type="text" minlength="8" maxlength="20" required />
 
-        <label>Membership Type</label>
-        <input id="membership_type" type="text" minlength="3" maxlength="40" required />
+        <label>Duration</label>
+        <div class="radio-group" role="radiogroup" aria-label="Membership duration">
+          <label class="radio-option"><input type="radio" name="duration" value="6 months" checked />6 months</label>
+          <label class="radio-option"><input type="radio" name="duration" value="1 year" />1 year</label>
+          <label class="radio-option"><input type="radio" name="duration" value="2 years" />2 years</label>
+        </div>
 
         <label>Start Date</label>
         <input id="start_date" type="date" required />
-
-        <label>End Date</label>
-        <input id="end_date" type="date" required />
 
         <label>Status</label>
         <select id="status">
@@ -45,8 +47,37 @@
           <option value="suspended">suspended</option>
         </select>
 
-        <button class="btn primary" type="submit">Save Membership</button>
-        <p id="membershipMessage" class="form-message"></p>
+        <button class="btn primary" type="submit">Add Membership</button>
+        <p id="addMembershipMessage" class="form-message"></p>
+      </form>
+
+      <hr class="section-divider" />
+
+      <h2>Update Membership</h2>
+      <form id="updateMembershipForm" class="form-grid">
+        <label>Membership ID (Required)</label>
+        <div class="inline-row">
+          <input id="membershipLookupId" type="number" min="1" required />
+          <button class="btn ghost" id="loadMembershipBtn" type="button">Load</button>
+        </div>
+
+        <div id="membershipPreview" class="info-box"></div>
+
+        <label>Update Action</label>
+        <div class="radio-group" role="radiogroup" aria-label="Membership update action">
+          <label class="radio-option"><input type="radio" name="update_action" value="extend" checked />Extend membership</label>
+          <label class="radio-option"><input type="radio" name="update_action" value="cancel" />Cancel membership</label>
+        </div>
+
+        <label>Extension Duration</label>
+        <div class="radio-group" role="radiogroup" aria-label="Extension duration">
+          <label class="radio-option"><input type="radio" name="extension_duration" value="6 months" checked />6 months</label>
+          <label class="radio-option"><input type="radio" name="extension_duration" value="1 year" />1 year</label>
+          <label class="radio-option"><input type="radio" name="extension_duration" value="2 years" />2 years</label>
+        </div>
+
+        <button class="btn primary" type="submit">Update Membership</button>
+        <p id="updateMembershipMessage" class="form-message"></p>
       </form>
     </section>
 
@@ -54,7 +85,7 @@
       <h2>Membership List</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Name</th><th>Email</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Duration</th><th>End Date</th><th>Status</th><th>Action</th></tr></thead>
           <tbody id="membershipTable"></tbody>
         </table>
       </div>

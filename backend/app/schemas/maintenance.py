@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 class MaintenanceBase(BaseModel):
@@ -9,6 +9,13 @@ class MaintenanceBase(BaseModel):
     maintenance_date: date
     status: str = Field(default="planned", pattern="^(planned|in-progress|done)$")
     cost: float = Field(ge=0)
+
+    @field_validator("title", "description")
+    @classmethod
+    def required_text_fields(cls, value: str) -> str:
+        if not value or not value.strip():
+            raise ValueError("field is required")
+        return value.strip()
 
 
 class MaintenanceCreate(MaintenanceBase):

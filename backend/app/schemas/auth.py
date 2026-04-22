@@ -8,6 +8,11 @@ class Token(BaseModel):
     full_name: str
 
 
+class TokenPayload(BaseModel):
+    sub: EmailStr
+    role: str = Field(pattern="^(admin|user)$")
+
+
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8, max_length=128)

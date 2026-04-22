@@ -1,7 +1,7 @@
 from datetime import date, datetime, timezone
 
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship, synonym
 
 from app.core.database import Base
 
@@ -20,5 +20,11 @@ class Membership(Base):
     created_by: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
+    # Requested naming aliases without renaming existing columns.
+    membership_id = synonym("id")
+    user_id = synonym("created_by")
+    duration = synonym("membership_type")
+
     creator = relationship("User", back_populates="memberships")
+    user = relationship("User", foreign_keys=[created_by], viewonly=True)
     transactions = relationship("Transaction", back_populates="member")

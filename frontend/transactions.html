@@ -15,11 +15,16 @@
     <a class="btn ghost" id="dashboardLink" href="#">Dashboard</a>
   </header>
 
+  <nav class="nav-links" id="appNav"></nav>
+
   <main class="page-grid">
     <section class="card">
       <h2>Add / Update Transaction</h2>
       <form id="transactionForm" class="form-grid">
         <input type="hidden" id="transactionId" />
+
+        <label>Linked User</label>
+        <select id="user_id" required></select>
 
         <label>Membership</label>
         <select id="member_id" required></select>
@@ -31,7 +36,7 @@
         <input id="transaction_type" type="text" minlength="3" maxlength="40" required />
 
         <label>Notes</label>
-        <textarea id="notes" maxlength="500"></textarea>
+        <textarea id="notes" maxlength="500" required></textarea>
 
         <button class="btn primary" type="submit">Save Transaction</button>
         <p id="transactionMessage" class="form-message"></p>
@@ -39,10 +44,10 @@
     </section>
 
     <section class="card">
-      <h2>Transactions List</h2>
+      <h2>Transaction History</h2>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Member</th><th>Amount</th><th>Type</th><th>Date</th><th>Action</th></tr></thead>
+          <thead><tr><th>User ID</th><th>Member</th><th>Amount</th><th>Type</th><th>Date</th><th>Action</th></tr></thead>
           <tbody id="transactionTable"></tbody>
         </table>
       </div>

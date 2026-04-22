@@ -11,20 +11,58 @@
 </head>
 <body>
   <header class="topbar compact">
-    <h1>Reports Module (Admin)</h1>
-    <a class="btn ghost" href="admin-dashboard.html">Dashboard</a>
+    <h1>Reports Module</h1>
+    <a class="btn ghost" id="dashboardLink" href="#">Dashboard</a>
   </header>
+
+  <nav class="nav-links" id="appNav"></nav>
 
   <main class="page-grid single-col">
     <section class="card">
-      <h2>Monthly Revenue</h2>
+      <div class="report-head">
+        <h2>User Report</h2>
+        <button class="btn ghost" id="exportUsersCsvBtn" type="button">Export CSV</button>
+      </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Month</th><th>Revenue</th></tr></thead>
-          <tbody id="monthlyRevenueTable"></tbody>
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Created At</th></tr></thead>
+          <tbody id="userReportTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="report-head">
+        <h2>Membership Report</h2>
+        <button class="btn ghost" id="exportMembershipCsvBtn" type="button">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Member</th><th>Email</th><th>Duration</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+          <tbody id="membershipReportTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="report-head">
+        <h2>Transaction Report</h2>
+        <button class="btn ghost" id="exportTransactionCsvBtn" type="button">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>User</th><th>Member</th><th>Amount</th><th>Type</th><th>Date</th></tr></thead>
+          <tbody id="transactionReportTable"></tbody>
         </table>
       </div>
       <p id="reportsMessage" class="form-message"></p>
+    </section>
+
+    <section class="card" id="charts">
+      <div class="report-head">
+        <h2>Charts</h2>
+      </div>
+      <div id="chartContainer" class="chart-list"></div>
     </section>
   </main>
 
