@@ -4,11 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login - Event Management</title>
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="css/styles.css" />
 </head>
+
 <body>
   <main class="auth-shell">
     <form id="loginForm" class="auth-card">
@@ -22,12 +25,63 @@
       <input id="password" type="password" minlength="8" required placeholder="Minimum 8 characters" />
 
       <button class="btn primary" type="submit">Login</button>
+
       <p id="formMessage" class="form-message"></p>
-      <p class="switch-link">No account? <a href="register.html">Register here</a></p>
+
+      <p class="switch-link">
+        No account? <a href="register.html">Register here</a>
+      </p>
     </form>
   </main>
-  <script src="js/config.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/auth.js"></script>
+
+  <!-- 🔥 LOGIN SCRIPT -->
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("formMessage");
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // ✅ Store session
+          localStorage.setItem("token", data.access_token);
+          localStorage.setItem("role", data.role);
+
+          message.style.color = "green";
+          message.innerText = "Login successful! Redirecting...";
+
+          // 🔀 Redirect based on role
+          setTimeout(() => {
+            if (data.role === "admin") {
+              window.location.href = "admin-dashboard.html";
+            } else {
+              window.location.href = "user-dashboard.html";
+            }
+          }, 1000);
+
+        } else {
+          message.style.color = "red";
+          message.innerText = data.detail || "Invalid credentials";
+        }
+
+      } catch (error) {
+        message.style.color = "red";
+        message.innerText = "Server error. Try again.";
+      }
+    });
+  </script>
+
 </body>
 </html>
